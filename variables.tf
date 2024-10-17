@@ -33,3 +33,8 @@ variable "sql-user" {
     type = string
     sensitive = true
 }
+
+variable "subscription_id" {
+    description = "Azure subscription id for this project"
+    type = string
+}

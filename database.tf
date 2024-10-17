@@ -9,9 +9,17 @@ resource "azurerm_mssql_server" "ca-mssql-server" {
     tags = var.tags
 }
 
-// Cont App database
-resource "azurerm_mssql_database" "ca-mssql-database" {
-    name = "${var.project}.db"
+// Cont App database for front-office
+resource "azurerm_mssql_database" "ca-fo-mssql-database" {
+    name = "fo.${var.project}.db"
+    server_id = azurerm_mssql_server.ca-mssql-server.id
+    sku_name = "S0"
+    tags = var.tags
+}
+
+// Cont App database for back-office
+resource "azurerm_mssql_database" "ca-bo-mssql-database" {
+    name = "bo.${var.project}.db"
     server_id = azurerm_mssql_server.ca-mssql-server.id
     sku_name = "S0"
     tags = var.tags
