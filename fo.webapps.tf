@@ -1,5 +1,5 @@
-resource "azurerm_service_plan" "bo-app-service-plan" {
-    name = "bo-asp-${var.project}-${var.enviroment}"
+resource "azurerm_service_plan" "fo-app-service-plan" {
+    name = "fo-asp-${var.project}-${var.enviroment}"
     location = var.location
     resource_group_name = azurerm_resource_group.ca-rg.name
     os_type = "Linux"
@@ -8,13 +8,15 @@ resource "azurerm_service_plan" "bo-app-service-plan" {
 }
 
 // Webapp UI
-resource "azurerm_linux_web_app" "bo-ui-webapp" {
-    name = "bo-ui-${var.project}-${var.enviroment}"
+resource "azurerm_linux_web_app" "fo-ui-webapp" {
+    name = "fo-ui-${var.project}-${var.enviroment}"
     location = var.location
     resource_group_name = azurerm_resource_group.ca-rg.name
 
     site_config {
+        # Value for unconfigurable attribute
         # linux_fx_version = "DOCKER|${azurerm_container_registry.ca-acr.login_server}/${var.project}/ui:latest"
+        # always_on cannot be set to true when using Free, F1, D1 Sku
         always_on = false
         vnet_route_all_enabled = true
     }
@@ -27,32 +29,34 @@ resource "azurerm_linux_web_app" "bo-ui-webapp" {
     # }
 
     depends_on = [
-        azurerm_service_plan.bo-app-service-plan,
+        azurerm_service_plan.fo-app-service-plan,
         azurerm_container_registry.ca-acr,
-        azurerm_subnet.bo-subnet-webapps
+        azurerm_subnet.fo-subnet-webapps
     ]
 
-    service_plan_id = azurerm_service_plan.bo-app-service-plan.id
+    service_plan_id = azurerm_service_plan.fo-app-service-plan.id
     tags = var.tags
 }
 
 // outbound level connection
-resource "azurerm_app_service_virtual_network_swift_connection" "bo-ui-webapp-v-swift-connection" {
-    app_service_id    = azurerm_linux_web_app.bo-ui-webapp.id
-    subnet_id         = azurerm_subnet.bo-subnet-webapps.id
+resource "azurerm_app_service_virtual_network_swift_connection" "fo-ui-webapp-v-swift-connection" {
+    app_service_id    = azurerm_linux_web_app.fo-ui-webapp.id
+    subnet_id         = azurerm_subnet.fo-subnet-webapps.id
     depends_on = [
-        azurerm_linux_web_app.bo-ui-webapp
+        azurerm_linux_web_app.fo-ui-webapp
     ]
 }
 
 // Webapp API
-resource "azurerm_linux_web_app" "bo-api-webapp" {
-    name = "bo-api-${var.project}-${var.enviroment}"
+resource "azurerm_linux_web_app" "fo-api-webapp" {
+    name = "fo-api-${var.project}-${var.enviroment}"
     location = var.location
     resource_group_name = azurerm_resource_group.ca-rg.name
 
     site_config {
+        # Value for unconfigurable attribute
         # linux_fx_version = "DOCKER|${azurerm_container_registry.ca-acr.login_server}/${var.project}/api:latest"
+        # always_on cannot be set to true when using Free, F1, D1 Sku
         always_on = false
         vnet_route_all_enabled = true
     }
@@ -65,20 +69,20 @@ resource "azurerm_linux_web_app" "bo-api-webapp" {
     # }
 
     depends_on = [
-        azurerm_service_plan.bo-app-service-plan,
+        azurerm_service_plan.fo-app-service-plan,
         azurerm_container_registry.ca-acr,
-        azurerm_subnet.bo-subnet-webapps
+        azurerm_subnet.fo-subnet-webapps
     ]
 
-    service_plan_id = azurerm_service_plan.bo-app-service-plan.id
+    service_plan_id = azurerm_service_plan.fo-app-service-plan.id
     tags = var.tags
 }
 
 // outbound level connection
-resource "azurerm_app_service_virtual_network_swift_connection" "bo-api-webapp-v-swift-connection" {
-    app_service_id    = azurerm_linux_web_app.bo-api-webapp.id
-    subnet_id         = azurerm_subnet.bo-subnet-webapps.id
+resource "azurerm_app_service_virtual_network_swift_connection" "fo-api-webapp-v-swift-connection" {
+    app_service_id    = azurerm_linux_web_app.fo-api-webapp.id
+    subnet_id         = azurerm_subnet.fo-subnet-webapps.id
     depends_on = [
-        azurerm_linux_web_app.bo-api-webapp
+        azurerm_linux_web_app.fo-api-webapp
     ]
 }
