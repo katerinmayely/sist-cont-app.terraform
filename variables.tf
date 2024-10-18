@@ -31,7 +31,6 @@ variable "sql-password" {
 variable "sql-user" {
     description = "azure sql-server user"
     type = string
-    sensitive = true
 }
 
 variable "subscription_id" {
