@@ -1,5 +1,5 @@
 resource "azurerm_linux_function_app" "ca-bo-function-app" {
-    name                      = "bo-function-${var.project}-${var.enviroment}"
+    name                      = "bo-function-${var.project}"
     location                  = var.location
     resource_group_name       = azurerm_resource_group.ca-rg.name
     service_plan_id       = azurerm_service_plan.bo-app-service-plan.id
@@ -65,7 +65,7 @@ resource "azurerm_private_endpoint" "bo-function-private-endpoint"{
 }
 
 resource "azurerm_private_dns_zone" "bo-function-private-dns-zone"{
-    name= "private.bo-function-${var.project}-${var.enviroment}.azurewebsites.net"
+    name= "my.private.bo-function-${var.project}-${var.enviroment}.azurewebsites.net"
     resource_group_name = azurerm_resource_group.ca-rg.name
 
     tags = var.tags
@@ -83,7 +83,7 @@ resource "azurerm_private_dns_a_record" "bo-function-private-dns-a-record"{
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "vn-link-bo-function"{
-    name = "bo-functionlink-${var.project}-${var.enviroment}"
+    name = "my.bo-functionlink-${var.project}-${var.enviroment}"
     resource_group_name = azurerm_resource_group.ca-rg.name
     private_dns_zone_name = azurerm_private_dns_zone.bo-function-private-dns-zone.name
     virtual_network_id = azurerm_virtual_network.ca-vn.id

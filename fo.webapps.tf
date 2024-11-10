@@ -9,7 +9,7 @@ resource "azurerm_service_plan" "fo-app-service-plan" {
 
 // Webapp UI
 resource "azurerm_linux_web_app" "fo-ui-webapp" {
-    name = "fo-ui-${var.project}-${var.enviroment}"
+    name = "fo-ui-${var.project}"
     location = var.location
     resource_group_name = azurerm_resource_group.ca-rg.name
 
@@ -49,7 +49,7 @@ resource "azurerm_app_service_virtual_network_swift_connection" "fo-ui-webapp-v-
 
 // Webapp API
 resource "azurerm_linux_web_app" "fo-api-webapp" {
-    name = "fo-api-${var.project}-${var.enviroment}"
+    name = "fo-api-${var.project}"
     location = var.location
     resource_group_name = azurerm_resource_group.ca-rg.name
 

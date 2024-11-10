@@ -9,7 +9,7 @@ resource "azurerm_service_plan" "bo-app-service-plan" {
 
 // Webapp UI
 resource "azurerm_linux_web_app" "bo-ui-webapp" {
-    name = "bo-ui-${var.project}-${var.enviroment}"
+    name = "bo-ui-${var.project}"
     location = var.location
     resource_group_name = azurerm_resource_group.ca-rg.name
 
@@ -47,7 +47,7 @@ resource "azurerm_app_service_virtual_network_swift_connection" "bo-ui-webapp-v-
 
 // Webapp API
 resource "azurerm_linux_web_app" "bo-api-webapp" {
-    name = "bo-api-${var.project}-${var.enviroment}"
+    name = "bo-api-${var.project}"
     location = var.location
     resource_group_name = azurerm_resource_group.ca-rg.name
 

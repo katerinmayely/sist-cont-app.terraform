@@ -1,6 +1,6 @@
 // Database server
 resource "azurerm_mssql_server" "ca-mssql-server" {
-    name = "mssql-server-${var.project}-${var.enviroment}"
+    name = "mssql-server-${var.project}"
     resource_group_name = azurerm_resource_group.ca-rg.name
     location = var.location
     version = "12.0"
@@ -9,17 +9,9 @@ resource "azurerm_mssql_server" "ca-mssql-server" {
     tags = var.tags
 }
 
-// Cont App database for front-office
-resource "azurerm_mssql_database" "ca-fo-mssql-database" {
-    name = "fo.${var.project}.db"
-    server_id = azurerm_mssql_server.ca-mssql-server.id
-    sku_name = "S0"
-    tags = var.tags
-}
-
-// Cont App database for back-office
-resource "azurerm_mssql_database" "ca-bo-mssql-database" {
-    name = "bo.${var.project}.db"
+// Cont App database
+resource "azurerm_mssql_database" "ca-mssql-database" {
+    name = "${var.project}.db"
     server_id = azurerm_mssql_server.ca-mssql-server.id
     sku_name = "S0"
     tags = var.tags
@@ -42,7 +34,7 @@ resource "azurerm_private_endpoint" "ca-mssql-server-pe" {
 
 // DNS Zone Configuration
 resource "azurerm_private_dns_zone" "db-p-dns-zone" {
-    name = "private.db.mssql_server.link.database"
+    name = "my.private.db.mssql_server.link.database"
     resource_group_name = azurerm_resource_group.ca-rg.name
     tags = var.tags
 }
@@ -58,7 +50,7 @@ resource "azurerm_private_dns_a_record" "mssqlserver-dns-record" {
 
 // Link DNS Zone to VNet
 resource "azurerm_private_dns_zone_virtual_network_link" "vn_link_db" {
-    name = "vn-link-db-${var.project}-${var.enviroment}"
+    name = "my.vn-link-db-${var.project}-${var.enviroment}"
     resource_group_name = azurerm_resource_group.ca-rg.name
     private_dns_zone_name = azurerm_private_dns_zone.db-p-dns-zone.name
     virtual_network_id = azurerm_virtual_network.ca-vn.id

@@ -1,5 +1,5 @@
 resource "azurerm_storage_account" "ca-storage-acount" {
-    name = "storagesistcontappdev"
+    name = "mystoragesistcontappdev"
     location = var.location
     resource_group_name = azurerm_resource_group.ca-rg.name
     account_tier = "Standard"
@@ -10,7 +10,7 @@ resource "azurerm_storage_account" "ca-storage-acount" {
 // Blob container for user files
 resource "azurerm_storage_container" "ca-files-container" {
     name = "blobfiles"
-    storage_account_name = azurerm_storage_account.ca-storage-acount.name
+    storage_account_id = azurerm_storage_account.ca-storage-acount.id
     container_access_type = "private"
 }
 
@@ -18,7 +18,7 @@ resource "azurerm_storage_container" "ca-files-container" {
 // Blob container for invoices 
 resource "azurerm_storage_container" "ca-invoices" {
     name = "blobinvoinces"
-    storage_account_name = azurerm_storage_account.ca-storage-acount.name
+    storage_account_id = azurerm_storage_account.ca-storage-acount.id
     container_access_type = "private"
 }
 
@@ -57,8 +57,8 @@ resource "azurerm_private_endpoint" "queue_private_endpoint" {
 }
 
 // DNS Zone
-resource "azurerm_private_dns_zone" "storage-p-dns-zone" {
-    name = "private.storage_account.link.storage"
+resource "azurerm_private_dns_zone" "my-storage-p-dns-zone" {
+    name = "myprivate.storage_account.link.storage"
     resource_group_name = azurerm_resource_group.ca-rg.name
     tags = var.tags
 }
@@ -68,15 +68,15 @@ resource "azurerm_private_dns_a_record" "name" {
     name = "storage-record-${var.project}-${var.enviroment}"
     resource_group_name = azurerm_resource_group.ca-rg.name
     ttl = 300
-    zone_name = azurerm_private_dns_zone.storage-p-dns-zone.name
+    zone_name = azurerm_private_dns_zone.fo-function-private-dns-zone.name
     records = [ azurerm_private_endpoint.blob_private_endpoint.private_service_connection[0].private_ip_address,
                 azurerm_private_endpoint.queue_private_endpoint.private_service_connection[0].private_ip_address ]
 }
 
 // DNS Virtual Network Link
 resource "azurerm_private_dns_zone_virtual_network_link" "vn-link-storage" {
-    name = "vn-link-storage-${var.project}-${var.enviroment}"
+    name = "my.vn-link-storage-${var.project}-${var.enviroment}"
     resource_group_name = azurerm_resource_group.ca-rg.name
     virtual_network_id = azurerm_virtual_network.ca-vn.id
-    private_dns_zone_name = azurerm_private_dns_zone.storage-p-dns-zone.name
+    private_dns_zone_name = azurerm_private_dns_zone.my-storage-p-dns-zone.name
 }
