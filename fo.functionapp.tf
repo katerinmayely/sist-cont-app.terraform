@@ -1,8 +1,8 @@
-resource "azurerm_linux_function_app" "ca-fo-function-app" {
+resource "azurerm_function_app" "ca-fo-function-app" {
     name                      = "fo-function-${var.project}"
     location                  = var.location
     resource_group_name       = azurerm_resource_group.ca-rg.name
-    service_plan_id       = azurerm_service_plan.fo-app-service-plan.id
+    app_service_plan_id       = azurerm_app_service_plan.fo-app-service-plan.id
     storage_account_name      = azurerm_storage_account.ca-storage-acount.name
     storage_account_access_key = azurerm_storage_account.ca-storage-acount.primary_connection_string
     # An attribute named "version" is not expected here
@@ -12,7 +12,7 @@ resource "azurerm_linux_function_app" "ca-fo-function-app" {
 
     site_config {
         #  Can't configure a value for "site_config.0.linux_fx_version": its value will be decided automatically based on the result of applying this configuration.
-        # linux_fx_version       = "DOCKER|mcr.microsoft.com/azure-functions/dotnet:4-appservice-quickstart"
+        linux_fx_version       = "DOCKER|mcr.microsoft.com/azure-functions/dotnet:4-appservice-quickstart"
         # always_on              = true
         vnet_route_all_enabled = true
 
@@ -42,7 +42,7 @@ resource "azurerm_linux_function_app" "ca-fo-function-app" {
     tags = var.tags
 
     depends_on = [
-        azurerm_service_plan.fo-app-service-plan,
+        azurerm_app_service_plan.fo-app-service-plan,
         azurerm_subnet.fo-subnet-f-app,
         azurerm_container_registry.ca-acr
     ]
@@ -58,7 +58,7 @@ resource "azurerm_private_endpoint" "fo-function-private-endpoint"{
 
     private_service_connection {
         name = "fo-function-private-ec-${var.project}-${var.enviroment}"
-        private_connection_resource_id = azurerm_linux_function_app.ca-fo-function-app.id
+        private_connection_resource_id = azurerm_function_app.ca-fo-function-app.id
         subresource_names = ["sites"]
         is_manual_connection = false
     }
